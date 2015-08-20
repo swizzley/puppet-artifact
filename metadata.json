@@ -2,7 +2,7 @@
 	"author": "Dustin Morgan <morgan@aspendenver.org>",
 	"dependencies": [    {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.6.0"
+      "version_requirement": ">=4.6.0 <5.0"
     }],
 	"license": "Apache-2.0",
 	"name": "swizzley88-artifact",
@@ -10,7 +10,7 @@
 	"requirements": [
     {
       "name": "pe",
-      "version_requirement": ">=3.x"
+      "version_requirement": ">=3.0"
     },
     {
       "name": "puppet",
