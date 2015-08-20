@@ -6,6 +6,22 @@
     }],
 	"license": "Apache-2.0",
 	"name": "swizzley88-artifact",
+	"project_page": "https://github.com/swizzley/puppet-artifact",
+	"requirements": [
+    {
+      "name": "pe",
+      "version_requirement": ">=3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">=2.7.20 <4.0.0"
+    }
+    ],
+	"source": "https://github.com/swizzley/puppet-artifact.git",
+	"issues_url": "https://github.com/swizzley/puppet-artifact/issues",
+	"summary": "Download and update artifacts",
+	"tags": ["artifact","update", "download", "refresh"],
+	"version": "0.1.1",
 	"operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
@@ -58,21 +74,5 @@
         "14.04"
       ]
     }
-  ],
-	"project_page": "",
-	  "requirements": [
-    {
-      "name": "pe",
-      "version_requirement": ">=3.x"
-    },
-    {
-      "name": "puppet",
-      "version_requirement": ">=2.7.20 <4.0.0"
-    }
-  ],
-	"source": "https://github.com/swizzley/puppet-artifact.git",
-	"issues_url": "https://github.com/swizzley/puppet-artifact/issues",
-	"summary": "Download and update artifacts",
-	"tags": ["artifact","update", "download", "refresh"],
-	"version": "0.1.1"
+    ]
 }
