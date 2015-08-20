@@ -1,0 +1,78 @@
+{
+	"author": "Dustin Morgan <morgan@aspendenver.org>",
+	"dependencies": [    {
+      "name": "puppetlabs/stdlib",
+      "version_requirement": ">=4.6.0"
+    }],
+	"license": "Apache-2.0",
+	"name": "swizzley88-artifact",
+	"operatingsystem_support": [
+    {
+      "operatingsystem": "RedHat",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "CentOS",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "OracleLinux",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Scientific",
+      "operatingsystemrelease": [
+        "4",
+        "5",
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Debian",
+      "operatingsystemrelease": [
+        "6",
+        "7"
+      ]
+    },
+    {
+      "operatingsystem": "Ubuntu",
+      "operatingsystemrelease": [
+        "10.04",
+        "12.04",
+        "14.04"
+      ]
+    }
+  ],
+	"project_page": "",
+	  "requirements": [
+    {
+      "name": "pe",
+      "version_requirement": "3.x"
+    },
+    {
+      "name": "puppet",
+      "version_requirement": ">=2.7.20 <4.0.0"
+    }
+  ],
+	"source": "https://github.com/swizzley/puppet-artifact",
+	"issues_url": "https://github.com/swizzley/puppet-artifact/issues",
+	"summary": "Download and update artifacts",
+	"tags": ["artifact","update", "download", "refresh"],
+	"version": "0.1.0"
+}
