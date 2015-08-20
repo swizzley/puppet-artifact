@@ -5,15 +5,20 @@
 **Table of Contents**
 
 1. [Overview](#overview)
-2. [Usage](#usage)
-3. [Requirements](#requirements)
-4. [Compatibility](#compatibility)
-5. [Limitations](#limitations)
-6. [Development](#development)
+2. [Setup](#setup)
+3. [Usage](#usage)
+4. [Requirements](#requirements)
+5. [Compatibility](#compatibility)
+6. [Limitations](#limitations)
+7. [Development](#development)
     
 ## Overviw
 
-This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. 
+This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. Also for refreshing services dependant on these artifacts, which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. 
+
+## Setup
+
+puppet module install swizzley88-artifact
 
 ## Usage
 
@@ -24,11 +29,14 @@ artifact { 'artifact.war':
   update => true,
   rename => 'current.war',
   swap   => '/home/tomcat/tmp',
+  before => File['/home/tomcat/webapps/artifact.war'],
+  notify => Service['tomcat'],
 }
 artifact { 'artifact.war': 
   source => 'http://example.com/pub/artifact.war', 
   target => '/home/tomcat/webapps', 
   purge  => true,
+  notify => [File['/home/tomcat/webapps/artifact.war'], Service['tomcat']],
 }
 ```
 
@@ -49,6 +57,15 @@ Tested On: CentOS 6.4 (used in production)
 ## Limitations
 
 This module will not set permissions, therefore if this is needed, a second declaration of the final resource is needed, presumably using notify meta parameter.
+```
+file { '/home/tomcat/webapps/current.war': 
+  ensure => present,
+  owner  => 'tomcat',
+  group  => 'apache',
+  mode   => '0640',
+  require => Artifact['artifact.war]',
+  notify => Service['tomcat'],
+```
 
 ## Development
 
