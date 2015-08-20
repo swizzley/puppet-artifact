@@ -2,7 +2,7 @@
 	"author": "Dustin Morgan <morgan@aspendenver.org>",
 	"dependencies": [    {
       "name": "puppetlabs/stdlib",
-      "version_requirement": ">=4.6.0"
+      "version_requirement": ">=4.6.0 <99.99"
     }],
 	"license": "Apache-2.0",
 	"name": "swizzley88-artifact",
@@ -63,16 +63,16 @@
 	  "requirements": [
     {
       "name": "pe",
-      "version_requirement": "3.x"
+      "version_requirement": ">=3.x <4.0.0"
     },
     {
       "name": "puppet",
       "version_requirement": ">=2.7.20 <4.0.0"
     }
   ],
-	"source": "https://github.com/swizzley/puppet-artifact",
+	"source": "https://github.com/swizzley/puppet-artifact.git",
 	"issues_url": "https://github.com/swizzley/puppet-artifact/issues",
 	"summary": "Download and update artifacts",
 	"tags": ["artifact","update", "download", "refresh"],
-	"version": "0.1.0"
+	"version": "0.1.1"
 }
