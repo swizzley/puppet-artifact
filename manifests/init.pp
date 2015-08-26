@@ -68,7 +68,7 @@ define artifact ($source, $target, $update = false, $rename = undef,
       path     => $path,
       provider => 'shell',
       command  => "mv -f /tmp/${resource} ${full_target}",
-      onlyif   => "curl -sko ${swap}/${resource} ${source} && diff ${swap}/${resource} ${full_target}|grep differ",
+      onlyif   => "touch ${full_target} && curl -sko ${swap}/${resource} ${source} && diff ${swap}/${resource} ${full_target}|grep differ",
       require  => [Package['curl'], Package['diffutils']],
     }
   }
