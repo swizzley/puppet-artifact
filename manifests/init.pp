@@ -2,17 +2,18 @@
 #
 # This module manages artifact
 #
-# Parameters: $source, $target, $update, $rename, $purge, $swap, $owner, $group, $mode
+# Parameters: $source, $target, $update, $rename, $purge, $swap, $owner, $group, $mode, $legacy
 #
 # Actions:
 #
-# Requires: see Modulefile
+# Requires: Package['curl', 'dos2unix', 'grep', 'diffutils', 'bash']
 #
 # Sample Usage:
 #
-define artifact ($source, $target, $update = false, $rename = undef, $purge = false, $swap = '/tmp', $timeout = 0) {
+define artifact ($source, $target, $update = false, $rename = undef, $purge = false, $swap = '/tmp', $legacy = false) {
   validate_bool($update)
   validate_bool($purge)
+  validate_bool($legacy)
   validate_absolute_path($target)
   validate_absolute_path($swap)
   validate_string($source)
@@ -25,8 +26,10 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
   if ($rename != undef) {
     validate_string($rename)
     $full_target = "${target}/${rename}"
+    $swap_target = "${swap}/${rename}"
   } else {
     $full_target = "${target}/${resource}"
+    $swap_target = "${swap}/${resource}"
   }
 
   if ($update == false) {
@@ -46,6 +49,27 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
         creates  => $full_target,
         timeout  => $timeout
       }
+    }
+  } elsif ($legacy == false) {
+    file { '/usr/local/sbin':
+      ensure => directory,
+      mode   => '0755',
+      owner  => 'root',
+      group  => 'root',
+    } ->
+    file { '/usr/local/sbin/artifact-puppet':
+      ensure => present,
+      mode   => '0755',
+      owner  => 'root',
+      group  => 'root',
+      source => 'puppet:///modules/artifact/artifact-puppet'
+    } ->
+    exec { "updating ${resource}":
+      path     => $path,
+      provider => 'shell',
+      command  => "mv -f ${swap_target} ${full_target}",
+      onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+      timeout  => 0,
     }
   } elsif ($rename == undef) {
     exec { "updating ${resource}":

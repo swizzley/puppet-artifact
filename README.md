@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.1.4-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.0-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -14,7 +14,7 @@
     
 ## Overviw
 
-This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. Also for refreshing services dependant on these artifacts, which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. 
+This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. Also for refreshing services dependant on these artifacts, which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. It adds a new bash script called /usr/local/sbin/artifact-puppet which can be overridden using the ```legacy => true``` parameter, but this script does a test based on file size before downloading, and confirms the size matches before overriding the working file with the swap file, else it prints a download error, or skips the download entirely if ```update => true``` and the file sizes are identical.
 
 ## Setup
 
@@ -29,6 +29,7 @@ artifact { 'artifact.war':
   update => true,
   rename => 'current.war',
   swap   => '/home/tomcat/tmp',
+  legacy => true,
   before => File['/home/tomcat/webapps/artifact.war'],
   notify => Service['tomcat'],
 }
@@ -43,14 +44,14 @@ artifact { 'artifact.war':
 ## Requirements
 
 ```
-package { ['curl', 'diffutils']: ensure => 'installed' }
+package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
 ```
 ## Compatibility
 
 Linux:
 
  * RHEL/CentOS/Fedora/Oracle/Scientific
- * Debian/Ubuntu
+ * Debian/Ubuntu (untested since 0.1.4)
  
 Tested On: CentOS 6.4 (used in production)
 
@@ -59,17 +60,17 @@ Tested On: CentOS 6.4 (used in production)
 This module will not set permissions, therefore if this is needed, a second declaration of the final resource is needed, presumably using notify meta parameter.
 ```
 file { '/home/tomcat/webapps/current.war': 
-  ensure => present,
-  owner  => 'tomcat',
-  group  => 'apache',
-  mode   => '0640',
+  ensure  => present,
+  owner   => 'tomcat',
+  group   => 'apache',
+  mode    => '0640',
   require => Artifact['artifact.war]',
-  notify => Service['tomcat'],
+  notify  => Service['tomcat'],
 ```
 
 ## Development
 
-Not likely to develop this further, but feel free to fork it and send a pull request if you want, if someone ever adds the ability to specify a shell provider for exec, I will change the method from a diff to an md5 comparison. Currently to implement that sh would have to call bash and all the quotes and whacks make it look ugly, diff works well enough for my use case. If you need md5 comparisions, it would look something like this:
+I plan to add permissions and package deps eventually, as well as further OS support, and perhaps even integrate as a puppet type with checksum. Curent version is only tested on EL6. 
 
 ```
 onlyif   => "bash -c 'curl -sko ${swap}/${resource} ${source}/${resource} && diff <( echo $(md5sum ${swap}/${resource}) ) <( echo $(md5sum ${full_target}) )|grep -E \"<|>\"'",
