@@ -10,7 +10,7 @@
 #
 # Sample Usage:
 #
-define artifact ($source, $target, $update = false, $rename = undef, $purge = false, $swap = '/tmp', $legacy = false) {
+define artifact ($source, $target, $update = false, $rename = undef, $purge = false, $swap = '/tmp', $legacy = false, $timeout = 0) {
   validate_bool($update)
   validate_bool($purge)
   validate_bool($legacy)
@@ -22,6 +22,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
   # Some overly scoped path to help functionality across platforms
   $path = '/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/share/bin:/usr/share/bin'
   $resource = $title
+  $wait_sec = $timeout
 
   if ($rename != undef) {
     validate_string($rename)
@@ -39,7 +40,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
         provider => 'shell',
         command  => "rm -f ${full_target} && curl -so ${full_target} ${source}",
         creates  => $full_target,
-        timeout  => $timeout
+        timeout  => $wait_sec
       }
     } else {
       exec { "fetching artifact ${resource}":
@@ -47,7 +48,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
         provider => 'shell',
         command  => "curl -so ${full_target} ${source}",
         creates  => $full_target,
-        timeout  => $timeout
+        timeout  => $wait_sec
       }
     }
   } elsif ($legacy == false) {
@@ -69,7 +70,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
       provider => 'shell',
       command  => "mv -f ${swap_target} ${full_target}",
       onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
-      timeout  => 0,
+      timeout  => $wait_sec
     }
   } elsif ($rename == undef) {
     exec { "updating ${resource}":
@@ -77,7 +78,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
       provider => 'shell',
       command  => "mv -f /tmp/${resource} ${full_target}",
       onlyif   => "touch ${full_target} && curl -so ${swap}/${resource} ${source} && diff ${swap}/${resource} ${full_target}|grep differ",
-      timeout  => $timeout
+      timeout  => $wait_sec
     }
   } elsif ($rename != undef) {
     exec { "updating ${resource}":
@@ -85,7 +86,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
       provider => 'shell',
       command  => "mv -f /tmp/${rename} ${full_target}",
       onlyif   => "touch ${full_target} && curl -so ${swap}/${rename} ${source} && diff ${swap}/${rename} ${full_target}|grep differ",
-      timeout  => $timeout
+      timeout  => $wait_sec
     }
   }
 }
