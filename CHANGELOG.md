@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.4   (2015-10-06)
+
+  * fixed duplicate declaration for script
+
 0.2.3   (2015-10-06)
 
   * readme fix

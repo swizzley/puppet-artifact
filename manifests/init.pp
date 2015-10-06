@@ -62,13 +62,8 @@ define artifact (
       }
     }
   } elsif ($legacy == false) {
-    file { "${bin_dir}/artifact-puppet":
-      ensure => present,
-      mode   => '0755',
-      owner  => 'root',
-      group  => 'root',
-      source => 'puppet:///modules/artifact/artifact-puppet'
-    } ->
+    include artifact::script
+
     exec { "updating ${resource}":
       path     => $path,
       provider => 'shell',

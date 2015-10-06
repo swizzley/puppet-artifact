@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.3-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.4-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 

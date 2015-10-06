@@ -17,7 +17,7 @@
 	"issues_url": "https://github.com/swizzley/puppet-artifact/issues",
 	"summary": "Download and update artifacts",
 	"tags": ["artifact","update", "download", "refresh"],
-	"version": "0.2.3",
+	"version": "0.2.4",
 	"operatingsystem_support": [
     {
       "operatingsystem": "RedHat",
