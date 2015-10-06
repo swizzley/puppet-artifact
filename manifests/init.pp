@@ -62,7 +62,7 @@ define artifact (
       }
     }
   } elsif ($legacy == false) {
-    include artifact::script
+    contain artifact::script
 
     exec { "updating ${resource}":
       path     => $path,
