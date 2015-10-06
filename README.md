@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.2-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.3-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -29,15 +29,15 @@ package{['curl', 'dos2unix', 'grep', 'diffutils', 'bash']: ensure => installed}
 
 ## Paramaeters
 
-  * $source  ```https://some_url.jar [required]```
-  * $target  ```/some/local/dir [required]```
-  * $update  ```override with newer [default: false]```
-  * $rename  ```rename the downloaded file [default: undef]```
-  * $purge   ```replace the target (alternative to updating) [default: false]
-  * $swap    ```/download/dir [default: /tmp]
-  * $timeout ```exit after $x seconds [default: 0]```
-  * $bin_dir ```/bin/dir to save bash script [default: /usr/local/sbin]```
-  * $legacy  ```use old download and diff method [default: false]```
+  * $source  https://some_url.jar ```[required]```
+  * $target  /some/local/dir ```[required]```
+  * $update  override with newer ```[default: false]```
+  * $rename  rename the downloaded file ```[default: undef]```
+  * $purge   replace the target (alternative to updating) ```[default: false]```
+  * $swap    /download/dir ```[default: /tmp]```
+  * $timeout exit after $x seconds ```[default: 0]```
+  * $bin_dir /bin/dir to save bash script ```[default: /usr/local/sbin]```
+  * $legacy  use old download and diff method ```[default: false]```
 
 ## Usage
 

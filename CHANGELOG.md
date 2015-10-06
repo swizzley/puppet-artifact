@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.3   (2015-10-06)
+
+  * readme fix
+
 0.2.2   (2015-10-06)
 
   * fixed swap size = 0 issue after downloading fresh
