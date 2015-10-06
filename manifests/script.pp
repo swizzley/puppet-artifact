@@ -1,7 +1,5 @@
 # class artifact::script
 class artifact::script {
-  include artifact::packages
-
   file { '/usr/local/sbin/artifact-puppet':
     ensure  => present,
     mode    => '0755',
