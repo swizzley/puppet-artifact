@@ -45,12 +45,12 @@ artifact { 'artifact.war':
   before => File['/home/tomcat/webapps/artifact.war'],
   notify => Service['tomcat'],
 }
+```
+```
 artifact { 'artifact.war': 
   source  => 'http://example.com/pub/artifact.war', 
   target  => '/home/tomcat/webapps', 
-  purge   => true,
-  bin_dir => '/usr/bin',
-  notify  => [File['/home/tomcat/webapps/artifact.war'], Service['tomcat']],
+  update  => true,
 }
 ```
 
