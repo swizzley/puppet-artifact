@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.4-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.5-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -36,7 +36,6 @@ package{['curl', 'dos2unix', 'grep', 'diffutils', 'bash']: ensure => installed}
   * $purge   replace the target (alternative to updating) ```[default: false]```
   * $swap    /download/dir ```[default: /tmp]```
   * $timeout exit after $x seconds ```[default: 0]```
-  * $bin_dir /bin/dir to save bash script ```[default: /usr/local/sbin]```
   * $legacy  use old download and diff method ```[default: false]```
 
 ## Usage

@@ -4,6 +4,11 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.5   (2015-10-06)
+
+  * actually fixed duplicate declaration for script
+  * removed $bin_dir param
+
 0.2.4   (2015-10-06)
 
   * fixed duplicate declaration for script
