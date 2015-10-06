@@ -21,12 +21,6 @@ This module is designed to download artifacts using curl, the key feature is the
 
 ```puppet module install swizzley88-artifact```
 
-Dependant packages include:
-
-```
-package{['curl', 'dos2unix', 'grep', 'diffutils', 'bash']: ensure => installed}
-```
-
 ## Paramaeters
 
   * $source  https://some_url.jar ```[required]```
@@ -70,7 +64,7 @@ This will only compare if ARG1's size isn't the same as ARG2 and download it to 
 
 ## Requirements
 
-These packages are installed by this module, Note: dos2unix is not required if ```legacy => true``` and is only used to accomodate files that could be stored on windows file systems.
+These packages are installed by this module, Note: dos2unix is not required if ```legacy => true``` but is installed as of 0.2.x and is only used to accomodate files that could be stored on windows file systems.
 
 ```
 package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
