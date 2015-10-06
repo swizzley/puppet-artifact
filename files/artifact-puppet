@@ -18,19 +18,20 @@ else
     
     if [ "$LOCAL_SIZE" == "$REMOTE_SIZE" ]; 
     then 
-        echo "OK" >> /dev/null
+        echo "No Update Needed"
+        exit 3;
     else 
         if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
         then
-            echo "OK" >> /dev/null
+            echo "Update Ready in $SWAP"
         else
-            curl -so $SWAP $REMOTE
+            curl -so $SWAP -L -C - $REMOTE
             export SWAP_SIZE=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
             if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
             then
-                echo "OK" >> /dev/null
+                echo "Update Ready in $SWAP"
             else
-                echo "There was a problem with the download from $REMOTE"
+                echo "There was a problem with the download from $REMOTE to $SWAP so puppet will not update $LOCAL"
                 exit 1;
             fi
         fi

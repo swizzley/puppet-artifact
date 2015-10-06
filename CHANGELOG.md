@@ -4,6 +4,13 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.6   (2015-10-06)
+
+  * added dependant packages to module
+  * fixed logic in script to avoid re-downloading
+  * improved error messages
+  * added resume download functionality 
+
 0.2.5   (2015-10-06)
 
   * actually fixed duplicate declaration for script

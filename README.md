@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.5-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.6-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -21,7 +21,7 @@ This module is designed to download artifacts using curl, the key feature is the
 
 ```puppet module install swizzley88-artifact```
 
-Depending on your distribution and install level, you may need to install the below packages, I didn't include these because they are usually installed with a Base OS install and I didn't want to force anyone to refactor.
+Dependant packages include:
 
 ```
 package{['curl', 'dos2unix', 'grep', 'diffutils', 'bash']: ensure => installed}
@@ -70,7 +70,7 @@ This will only compare if ARG1's size isn't the same as ARG2 and download it to 
 
 ## Requirements
 
-These packages are not installed by this module.
+These packages are installed by this module, Note: dos2unix is not required if ```legacy => true``` and is only used to accomodate files that could be stored on windows file systems.
 
 ```
 package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
@@ -80,9 +80,9 @@ package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
 Linux:
 
  * RHEL/CentOS/Fedora/Oracle/Scientific
- * Debian/Ubuntu (untested since 0.1.4)
+ * Debian/Ubuntu
  
-Tested On: CentOS 6.4 (used in production)
+Tested On: CentOS 6.4 (used in production), Ubuntu 14.04
 
 ## Limitations
 
