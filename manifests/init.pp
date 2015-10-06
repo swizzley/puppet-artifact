@@ -18,14 +18,12 @@ define artifact (
   $purge   = false,
   $swap    = '/tmp',
   $legacy  = false,
-  $timeout = 0,
-  $bin_dir = '/usr/local/sbin') {
+  $timeout = 0,) {
   validate_bool($update)
   validate_bool($purge)
   validate_bool($legacy)
   validate_absolute_path($target)
   validate_absolute_path($swap)
-  validate_absolute_path($bin_dir)
   validate_string($source)
   validate_string($title)
 
@@ -68,7 +66,7 @@ define artifact (
       path     => $path,
       provider => 'shell',
       command  => "mv -f ${swap_target} ${full_target}",
-      onlyif   => "${bin_dir}/artifact-puppet ${full_target} ${source} ${swap_target}",
+      onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
       timeout  => $wait_sec
     }
   } elsif ($rename == undef) {
