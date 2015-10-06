@@ -10,12 +10,22 @@
 #
 # Sample Usage:
 #
-define artifact ($source, $target, $update = false, $rename = undef, $purge = false, $swap = '/tmp', $legacy = false, $timeout = 0) {
+define artifact (
+  $source,
+  $target,
+  $update  = false,
+  $rename  = undef,
+  $purge   = false,
+  $swap    = '/tmp',
+  $legacy  = false,
+  $timeout = 0,
+  $bin_dir = '/usr/local/sbin') {
   validate_bool($update)
   validate_bool($purge)
   validate_bool($legacy)
   validate_absolute_path($target)
   validate_absolute_path($swap)
+  validate_absolute_path($bin_dir)
   validate_string($source)
   validate_string($title)
 
@@ -52,13 +62,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
       }
     }
   } elsif ($legacy == false) {
-    file { '/usr/local/sbin':
-      ensure => directory,
-      mode   => '0755',
-      owner  => 'root',
-      group  => 'root',
-    } ->
-    file { '/usr/local/sbin/artifact-puppet':
+    file { "${bin_dir}/artifact-puppet":
       ensure => present,
       mode   => '0755',
       owner  => 'root',
@@ -69,7 +73,7 @@ define artifact ($source, $target, $update = false, $rename = undef, $purge = fa
       path     => $path,
       provider => 'shell',
       command  => "mv -f ${swap_target} ${full_target}",
-      onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+      onlyif   => "${bin_dir}/artifact-puppet ${full_target} ${source} ${swap_target}",
       timeout  => $wait_sec
     }
   } elsif ($rename == undef) {

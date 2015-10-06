@@ -2,15 +2,15 @@
 if [ "$#" -ne  "3" ]
 then
     echo "Usage: artifact-puppet LOCAL_FILE REMOTE_FILE_URL SWAP_FILE"
-    exit 1;
+    exit 2;
 else
 
     LOCAL=$1
     REMOTE=$2
     SWAP=$3
     
-    touch $LOCAL
-    touch $SWAP
+    if [ ! -f $LOCAL ]; then touch $LOCAL; fi
+    if [ ! -f $SWAP ]; then touch $SWAP; fi
     
     export LOCAL_SIZE=$(ls -l $LOCAL |awk '{print $5}'|dos2unix)
     export REMOTE_SIZE=$(curl -sI $REMOTE|grep Length|awk '{print $2}'|dos2unix)
@@ -25,6 +25,7 @@ else
             echo "OK" >> /dev/null
         else
             curl -so $SWAP $REMOTE
+            export SWAP_SIZE=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
             if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
             then
                 echo "OK" >> /dev/null

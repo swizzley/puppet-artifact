@@ -1,24 +1,43 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.1-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.2-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
 1. [Overview](#overview)
 2. [Setup](#setup)
-3. [Usage](#usage)
-4. [Requirements](#requirements)
-5. [Compatibility](#compatibility)
-6. [Limitations](#limitations)
-7. [Development](#development)
+3. [Parameteres](#parameters)
+4. [Usage](#usage)
+5. [Requirements](#requirements)
+6. [Compatibility](#compatibility)
+7. [Limitations](#limitations)
+8. [Development](#development)
     
 ## Overviw
 
-This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. Also for refreshing services dependant on these artifacts, which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. It adds a new bash script called /usr/local/sbin/artifact-puppet which can be overridden using the ```legacy => true``` parameter, but this script does a test based on file size before downloading, and confirms the size matches before overriding the working file with the swap file, else it prints a download error, or skips the download entirely if ```update => true``` and the file sizes are identical.
+This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. For refreshing services dependant on these artifacts... which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. As of version 0.2.x this module adds a new bash script called /usr/local/sbin/artifact-puppet which can be overridden using the ```legacy => true``` parameter to use the old download and diff method, but this bash script is more efficient and reliable because it does a test based on file size before downloading, and then confirms the size matches before overriding the working file with the swap file, else it prints a download error, or skips the download entirely which only applies to the ```update => true``` parameter. 
 
 ## Setup
 
-puppet module install swizzley88-artifact
+```puppet module install swizzley88-artifact```
+
+Depending on your distribution and install level, you may need to install the below packages, I didn't include these because they are usually installed with a Base OS install and I didn't want to force anyone to refactor.
+
+```
+package{['curl', 'dos2unix', 'grep', 'diffutils', 'bash']: ensure => installed}
+```
+
+## Paramaeters
+
+  * $source  ```https://some_url.jar [required]```
+  * $target  ```/some/local/dir [required]```
+  * $update  ```override with newer [default: false]```
+  * $rename  ```rename the downloaded file [default: undef]```
+  * $purge   ```replace the target (alternative to updating) [default: false]
+  * $swap    ```/download/dir [default: /tmp]
+  * $timeout ```exit after $x seconds [default: 0]```
+  * $bin_dir ```/bin/dir to save bash script [default: /usr/local/sbin]```
+  * $legacy  ```use old download and diff method [default: false]```
 
 ## Usage
 
@@ -34,14 +53,25 @@ artifact { 'artifact.war':
   notify => Service['tomcat'],
 }
 artifact { 'artifact.war': 
-  source => 'http://example.com/pub/artifact.war', 
-  target => '/home/tomcat/webapps', 
-  purge  => true,
-  notify => [File['/home/tomcat/webapps/artifact.war'], Service['tomcat']],
+  source  => 'http://example.com/pub/artifact.war', 
+  target  => '/home/tomcat/webapps', 
+  purge   => true,
+  bin_dir => '/usr/bin',
+  notify  => [File['/home/tomcat/webapps/artifact.war'], Service['tomcat']],
 }
 ```
 
+Command-Line usage of /usr/local/sbin/artifact-puppet:
+
+```
+/usr/local/sbin/artifact-puppet /opt/wordpress.tar.gz https://wordpress.org/latest.tar.gz /tmp/wordpress.tar.gz
+```
+
+This will only compare if ARG1's size isn't the same as ARG2 and download it to ARG3, it only touches ARG1 & ARG3 if they don't exist.
+
 ## Requirements
+
+These packages are not installed by this module.
 
 ```
 package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }

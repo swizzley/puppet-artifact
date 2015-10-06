@@ -4,6 +4,13 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.2   (2015-10-06)
+
+  * fixed swap size = 0 issue after downloading fresh
+  * removed ensure dir for /usr/local/sbin
+  * added param for /usr/local/sbin $bin_dir
+  * added params to readme
+
 0.2.1   (2015-10-05)
 
   * fixed timeout param
