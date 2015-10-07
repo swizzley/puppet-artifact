@@ -81,6 +81,15 @@ define artifact (
       timeout  => $wait_sec,
       require  => File['/usr/local/sbin/artifact-puppet']
     }
+
+    file { $full_target:
+      ensure    => present,
+      owner     => $owner,
+      group     => $group,
+      mode      => $mode,
+      require   => Exec["artifact ${resource}"],
+      subscribe => Exec["artifact ${resource}"]
+    }
   } else {
     exec { "artifact ${resource}":
       path     => $path,
@@ -91,15 +100,5 @@ define artifact (
       require  => [Package['curl'], Package['grep'], Package['diffutils'], Package['bash']],
     }
   }
-
-  file { $full_target:
-    ensure    => present,
-    owner     => $owner,
-    group     => $group,
-    mode      => $mode,
-    require   => Exec["artifact ${resource}"],
-    subscribe => Exec["artifact ${resource}"]
-  }
-
 }
 

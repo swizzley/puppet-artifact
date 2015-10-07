@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.8   (2015-10-07)
+
+  * moved file declare outside of legacy
+
 0.2.7   (2015-10-07)
 
   * simplified manifests for packages and script
