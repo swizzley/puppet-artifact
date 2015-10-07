@@ -20,9 +20,9 @@
 define artifact (
   $source,
   $target,
-  $update  = undef,
+  $update  = false,
   $rename  = undef,
-  $purge   = undef,
+  $purge   = false,
   $swap    = '/tmp',
   $timeout = 0,
   $owner   = undef,
@@ -30,7 +30,6 @@ define artifact (
   $mode    = undef) {
   validate_bool($update)
   validate_bool($purge)
-  validate_bool($legacy)
   validate_absolute_path($target)
   validate_absolute_path($swap)
   validate_string($source)
