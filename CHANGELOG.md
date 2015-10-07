@@ -4,6 +4,13 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.2.7   (2015-10-07)
+
+  * simplified manifests for packages and script
+  * set package and file require parameters to avoid catalog compilation mismatch
+  * added owner/group/mode params
+  * improved legacy rename
+
 0.2.6   (2015-10-06)
 
   * added dependant packages to module

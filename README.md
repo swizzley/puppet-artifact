@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.6-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.7-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -31,24 +31,32 @@ This module is designed to download artifacts using curl, the key feature is the
   * $swap    /download/dir ```[default: /tmp]```
   * $timeout exit after $x seconds ```[default: 0]```
   * $legacy  use old download and diff method ```[default: false]```
+  * $owner   uid owner of file ```[default: undef]```
+  * $group   gid owner of file ```[default: undef]```
+  * $mode    default permissions mode of file ```[default: undef]```
 
 ## Usage
 
 ```
 artifact { 'artifact.war': 
-  source => 'http://example.com/pub/artifact.war', 
-  target => '/home/tomcat/webapps', 
-  update => true,
-  rename => 'current.war',
-  swap   => '/home/tomcat/tmp',
-  legacy => true,
-  before => File['/home/tomcat/webapps/artifact.war'],
-  notify => Service['tomcat'],
+  source   => 'http://example.com/pub/artifact.war', 
+  target   => '/home/tomcat/webapps', 
+  swap     => '/home/tomcat/tmp',
+  legacy   => true,
+  purge    => true,
+  update   => false,
+  timeoute => 60,
+  owner    => 'tomcat',
+  group    => 'tomcat',
+  mode     => '0640',
+  before   => File['/home/tomcat/conf/artifact.properties'],
+  notify   => Service['tomcat'],
 }
 ```
+
 ```
-artifact { 'artifact.war': 
-  source  => 'http://example.com/pub/artifact.war', 
+artifact { "artifact-${version}-${build}.war": 
+  source  => "http://example.com/pub/artifact-${version}-${build}.war", 
   target  => '/home/tomcat/webapps', 
   update  => true,
 }
@@ -69,6 +77,7 @@ These packages are installed by this module, Note: dos2unix is not required if `
 ```
 package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
 ```
+
 ## Compatibility
 
 Linux:
@@ -76,24 +85,15 @@ Linux:
  * RHEL/CentOS/Fedora/Oracle/Scientific
  * Debian/Ubuntu
  
-Tested On: CentOS 6.4 (used in production), Ubuntu 14.04
+Tested On: CentOS 6, Ubuntu 14.04
 
 ## Limitations
 
-This module will not set permissions, therefore if this is needed, a second declaration of the final resource is needed, presumably using notify meta parameter.
-```
-file { '/home/tomcat/webapps/current.war': 
-  ensure  => present,
-  owner   => 'tomcat',
-  group   => 'apache',
-  mode    => '0640',
-  require => Artifact['artifact.war]',
-  notify  => Service['tomcat'],
-```
+Comparison operations are limited to diff when using ```legacy => true```, and to file size as of 0.2.x.
 
 ## Development
 
-I plan to add permissions and package deps eventually, as well as further OS support, and perhaps even integrate as a puppet type with checksum. Curent version is only tested on EL6. 
+Possibly integrate as a puppet type, and add support for checksum params. Perhaps add additional OS support.
 
 ```
 onlyif   => "bash -c 'curl -sko ${swap}/${resource} ${source}/${resource} && diff <( echo $(md5sum ${swap}/${resource}) ) <( echo $(md5sum ${full_target}) )|grep -E \"<|>\"'",

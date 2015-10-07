@@ -1,14 +1,21 @@
 # Class: artifact
 #
-# This module manages artifact
+# This module manages and updates artifacts, a.k.a. local copies of files
+# that are stored on a web server.
 #
-# Parameters: $source, $target, $update, $rename, $purge, $swap, $owner, $group, $mode, $legacy
+# Parameters: $source, $target, $update, $rename, $purge, $swap, $legacy, $timeout, $user, $group, $mode
 #
-# Actions:
+# Actions:  Downloads source to swap, checks difference in target, and replaces
+#           target with swap, option to rename on download
 #
 # Requires: Package['curl', 'dos2unix', 'grep', 'diffutils', 'bash']
 #
 # Sample Usage:
+# 							artifact { 'artifact.war':
+# 							  source  => 'http://example.com/pub/artifact.war',
+# 							  target  => '/home/tomcat/webapps',
+# 							  update  => true,
+# 							}
 #
 define artifact (
   $source,
@@ -18,7 +25,10 @@ define artifact (
   $purge   = false,
   $swap    = '/tmp',
   $legacy  = false,
-  $timeout = 0,) {
+  $timeout = 0,
+  $owner   = undef,
+  $group   = undef,
+  $mode    = undef) {
   validate_bool($update)
   validate_bool($purge)
   validate_bool($legacy)
@@ -26,7 +36,7 @@ define artifact (
   validate_absolute_path($swap)
   validate_string($source)
   validate_string($title)
-  include artifact::packages
+  include artifact::install
 
   # Some overly scoped path to help functionality across platforms
   $path = '/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/share/bin:/usr/share/bin'
@@ -44,48 +54,52 @@ define artifact (
 
   if ($update == false) {
     if ($purge == true) {
-      exec { "purging and fetching artifact ${resource}":
+      exec { "artifact ${resource}":
         path     => $path,
         provider => 'shell',
         command  => "rm -f ${full_target} && curl -so ${full_target} ${source}",
         creates  => $full_target,
-        timeout  => $wait_sec
+        timeout  => $wait_sec,
+        require  => Package['curl']
       }
     } else {
-      exec { "fetching artifact ${resource}":
+      exec { "artifact ${resource}":
         path     => $path,
         provider => 'shell',
         command  => "curl -so ${full_target} ${source}",
         creates  => $full_target,
-        timeout  => $wait_sec
+        timeout  => $wait_sec,
+        require  => Package['curl']
       }
     }
   } elsif ($legacy == false) {
-    include artifact::script
-
-    exec { "updating ${resource}":
+    exec { "artifact ${resource}":
       path     => $path,
       provider => 'shell',
       command  => "mv -f ${swap_target} ${full_target}",
       onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
-      timeout  => $wait_sec
+      timeout  => $wait_sec,
+      require  => File['/usr/local/sbin/artifact-puppet']
     }
-  } elsif ($rename == undef) {
-    exec { "updating ${resource}":
+  } else {
+    exec { "artifact ${resource}":
       path     => $path,
       provider => 'shell',
-      command  => "mv -f /tmp/${resource} ${full_target}",
-      onlyif   => "touch ${full_target} && curl -so ${swap}/${resource} ${source} && diff ${swap}/${resource} ${full_target}|grep differ",
-      timeout  => $wait_sec
-    }
-  } elsif ($rename != undef) {
-    exec { "updating ${resource}":
-      path     => $path,
-      provider => 'shell',
-      command  => "mv -f /tmp/${rename} ${full_target}",
-      onlyif   => "touch ${full_target} && curl -so ${swap}/${rename} ${source} && diff ${swap}/${rename} ${full_target}|grep differ",
-      timeout  => $wait_sec
+      command  => "mv -f ${swap_target} ${full_target}",
+      onlyif   => "touch ${full_target} && curl -so ${swap_target} ${source} && diff ${swap_target} ${full_target}|grep differ",
+      timeout  => $wait_sec,
+      require  => [Package['curl'], Package['grep'], Package['diffutils'], Package['bash']],
     }
   }
+
+  file { $full_target:
+    ensure    => present,
+    owner     => $owner,
+    group     => $group,
+    mode      => $mode,
+    require   => Exec["artifact ${resource}"],
+    subscribe => Exec["artifact ${resource}"]
+  }
+
 }
 
