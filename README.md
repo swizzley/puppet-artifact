@@ -97,9 +97,4 @@ Comparison operations are limited to diff when using ```legacy => true```, and t
 
 Possibly integrate as a puppet type, and add support for checksum params. Perhaps add additional OS support.
 
-```
-onlyif   => "bash -c 'curl -sko ${swap}/${resource} ${source}/${resource} && diff <( echo $(md5sum ${swap}/${resource}) ) <( echo $(md5sum ${full_target}) )|grep -E \"<|>\"'",
-```
-
-See what I mean, it would look much prettier without the bash -c '\"\"'
 
