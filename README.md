@@ -91,6 +91,8 @@ Tested On: CentOS 6, Ubuntu 14.04
 
 Comparison operations are limited to diff when using ```legacy => true```, and to file size as of 0.2.x.
 
+**AS OF 0.2.7** File permissions are set in this module, so the users declaring those permissions externally need to refactor, or stick to version <= 0.2.6
+
 ## Development
 
 Possibly integrate as a puppet type, and add support for checksum params. Perhaps add additional OS support.
