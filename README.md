@@ -41,7 +41,6 @@ artifact { 'artifact.war':
   source   => 'http://example.com/pub/artifact.war', 
   target   => '/home/tomcat/webapps', 
   swap     => '/home/tomcat/tmp',
-  legacy   => true,
   purge    => true,
   update   => false,
   timeoute => 60,
