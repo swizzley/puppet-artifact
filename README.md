@@ -93,6 +93,8 @@ Comparison operations are limited to diff when using ```legacy => true```, and t
 
 **WARNING**: As of 0.2.7 File permissions are declared in this module, so the users declaring those permissions externally need to refactor, or stick to version <= 0.2.6
 
+**WARNING**: Resume functionality in 0.2.6 can lead to corruption for artifacts that change before an interrupted download resumes, resume now deprecated as of >= 0.2.7
+
 ## Development
 
   * Possibly integrate as a puppet type

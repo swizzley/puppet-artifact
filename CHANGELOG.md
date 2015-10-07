@@ -10,6 +10,7 @@ Version (Release date)
   * set package and file require parameters to avoid catalog compilation mismatch
   * added owner/group/mode params
   * improved legacy rename
+  * removed resume download functionality, could cause corruption for volitile artifacts whos download is interrupted
 
 0.2.6   (2015-10-06)
 

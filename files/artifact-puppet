@@ -25,7 +25,7 @@ else
         then
             echo "Update Ready in $SWAP"
         else
-            curl -so $SWAP -L -C - $REMOTE
+            curl -so $SWAP $REMOTE
             export SWAP_SIZE=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
             if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
             then
