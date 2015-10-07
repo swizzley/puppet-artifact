@@ -95,6 +95,8 @@ Comparison operations are limited to diff when using ```legacy => true```, and t
 
 ## Development
 
-Possibly integrate as a puppet type, and add support for checksum params. Perhaps add additional OS support.
+  * Possibly integrate as a puppet type
+  * Add support for checksum params
+  * Perhaps add additional OS support
 
 
