@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.3.0   (2015-10-07)
+
+  * deprecated legacy param
+
 0.2.8   (2015-10-07)
 
   * moved file declare outside of legacy

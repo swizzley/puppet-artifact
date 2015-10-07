@@ -3,7 +3,7 @@
 # This module manages and updates artifacts, a.k.a. local copies of files
 # that are stored on a web server.
 #
-# Parameters: $source, $target, $update, $rename, $purge, $swap, $legacy, $timeout, $user, $group, $mode
+# Parameters: $source, $target, $update, $rename, $purge, $swap, $timeout, $user, $group, $mode
 #
 # Actions:  Downloads source to swap, checks difference in target, and replaces
 #           target with swap, option to rename on download
@@ -20,11 +20,10 @@
 define artifact (
   $source,
   $target,
-  $update  = false,
+  $update  = undef,
   $rename  = undef,
-  $purge   = false,
+  $purge   = undef,
   $swap    = '/tmp',
-  $legacy  = false,
   $timeout = 0,
   $owner   = undef,
   $group   = undef,
@@ -72,7 +71,7 @@ define artifact (
         require  => Package['curl']
       }
     }
-  } elsif ($legacy == false) {
+  } else {
     exec { "artifact ${resource}":
       path     => $path,
       provider => 'shell',
@@ -81,24 +80,15 @@ define artifact (
       timeout  => $wait_sec,
       require  => File['/usr/local/sbin/artifact-puppet']
     }
+  }
 
-    file { $full_target:
-      ensure    => present,
-      owner     => $owner,
-      group     => $group,
-      mode      => $mode,
-      require   => Exec["artifact ${resource}"],
-      subscribe => Exec["artifact ${resource}"]
-    }
-  } else {
-    exec { "artifact ${resource}":
-      path     => $path,
-      provider => 'shell',
-      command  => "mv -f ${swap_target} ${full_target}",
-      onlyif   => "touch ${full_target} && curl -so ${swap_target} ${source} && diff ${swap_target} ${full_target}|grep differ",
-      timeout  => $wait_sec,
-      require  => [Package['curl'], Package['grep'], Package['diffutils'], Package['bash']],
-    }
+  file { $full_target:
+    ensure    => present,
+    owner     => $owner,
+    group     => $group,
+    mode      => $mode,
+    require   => Exec["artifact ${resource}"],
+    subscribe => Exec["artifact ${resource}"]
   }
 }
 

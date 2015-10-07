@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.2.8-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.3.0-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -15,7 +15,7 @@
 
 ## Overviw
 
-This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. For refreshing services dependant on these artifacts... which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. As of version 0.2.x this module adds a new bash script called /usr/local/sbin/artifact-puppet which can be overridden using the ```legacy => true``` parameter to use the old download and diff method, but this bash script is more efficient and reliable because it does a test based on file size before downloading, and then confirms the size matches before overriding the working file with the swap file, else it prints a download error, or skips the download entirely which only applies to the ```update => true``` parameter. As of **0.2.8** file permissions are declared in this module, so the users declaring those permissions externally need to change the parameter ```$legacy = false``` to ```$legacy = true```, refactor existing ```artifact{'artifact':}```` declarations or stick to version <= 0.2.6 
+This module is designed to download artifacts using curl, the key feature is the ability to update artifacts from a source if they are different. It uses curl because it doesn't usually need installed. For refreshing services dependant on these artifacts... which is why this module was developed relies heavily on meta parameters, require, subscribe, before, notify, and for triggering external checks the exec refreshonly bool. As of version 0.2.x this module adds a new bash script called /usr/local/sbin/artifact-puppet, this bash script is more efficient and reliable because it does a test based on file size before downloading, and then confirms the size matches before overriding the working file with the swap file, else it prints a download error, or skips the download entirely which only applies to the ```update => true``` parameter. 
 
 ## Setup
 
@@ -30,7 +30,6 @@ This module is designed to download artifacts using curl, the key feature is the
   * $purge   replace the target (alternative to updating) ```[default: false]```
   * $swap    /download/dir ```[default: /tmp]```
   * $timeout exit after $x seconds ```[default: 0]```
-  * $legacy  use old download and diff method ```[default: false]```
   * $owner   uid owner of file ```[default: undef]```
   * $group   gid owner of file ```[default: undef]```
   * $mode    default permissions mode of file ```[default: undef]```
@@ -72,8 +71,6 @@ This will only compare if ARG1's size isn't the same as ARG2 and download it to 
 
 ## Requirements
 
-These packages are installed by this module, Note: dos2unix is not required if ```legacy => true``` but is installed as of 0.2.x and is only used to accomodate files that could be stored on windows file systems.
-
 ```
 package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
 ```
@@ -89,13 +86,13 @@ Tested On: CentOS 6, Ubuntu 14.04
 
 ## Limitations
 
-Comparison operations are limited to diff when using ```legacy => true```, and to file size as of 0.2.x.
+Comparison operations are limited to diff for version <= 0.1.x, and to file size as of >= 0.2.x <= 0.3.0
 
-**WARNING**: As of 0.2.8 File permissions are declared in this module, so the users declaring those permissions externally need to refactor, set ```$legacy = true```, or stick to version <= 0.2.6
+**WARNING**: As of  >= 0.2.8 File permissions are declared in this module, so the users declaring those permissions externally should use version <= 0.1.4
 
-**WARNING**: Resume functionality in 0.2.6 can lead to corruption for artifacts that change before an interrupted download resumes, resume now deprecated as of >= 0.2.8
+**WARNING**: Resume functionality in 0.2.6 can lead to corruption for artifacts that change before an interrupted download resumes, resume now deprecated as of >= 0.2.7
 
-Parameters for owner, group, mode are not set if ```legacy => true```
+**WARNING**: As of >=0.3.0 the legacy update parameter has been deprecated, if using ```legacy => ``` anywhere, stick to version >= 0.2.0 <= 0.2.8
 
 ## Development
 
