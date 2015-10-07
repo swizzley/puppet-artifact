@@ -8,6 +8,6 @@ class artifact::install {
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/artifact/artifact-puppet',
-    require => [Package['dos2unix'], Package['curl'], Package['grep'], Package['bash']]
+    require => [Package['curl', 'dos2unix', 'grep', 'diffutils', 'bash']]
   }
 }
