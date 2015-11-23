@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.3.1   (2015-11-23)
+
+  * All artifacts now use comparison script
+
 0.3.0   (2015-10-07)
 
   * deprecated legacy param
