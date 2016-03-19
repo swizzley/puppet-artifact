@@ -34,8 +34,9 @@ define artifact (
   validate_absolute_path($swap)
   validate_string($source)
   validate_string($title)
-  include artifact::install
-
+  if !defined(Class['artifact::install']) {
+    include artifact::install
+  }
   # Some overly scoped path to help functionality across platforms
   $path = '/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/share/bin:/usr/share/bin'
   $resource = $title
@@ -101,5 +102,3 @@ define artifact (
     subscribe => Exec["artifact ${resource}"]
   }
 }
-
-
