@@ -1,14 +1,24 @@
 # class artifact::install
 class artifact::install {
-  package { 'curl': ensure => installed }
+  if !defined(Package['curl']) {
+    package { 'curl': ensure => installed }
+  }
 
-  package { 'dos2unix': ensure => installed }
+  if !defined(Package['dos2unix']) {
+    package { 'dos2unix': ensure => installed }
+  }
 
-  package { 'grep': ensure => installed }
+  if !defined(Package['grep']) {
+    package { 'grep': ensure => installed }
+  }
 
-  package { 'diffutils': ensure => installed }
+  if !defined(Package['diffutils']) {
+    package { 'diffutils': ensure => installed }
+  }
 
-  package { 'bash': ensure => installed }
+  if !defined(Package['bash']) {
+    package { 'bash': ensure => installed }
+  }
 
   file { '/usr/local/sbin/artifact-puppet':
     ensure  => present,

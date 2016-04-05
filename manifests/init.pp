@@ -11,11 +11,11 @@
 # Requires: Package['curl', 'dos2unix', 'grep', 'diffutils', 'bash']
 #
 # Sample Usage:
-# 							artifact { 'artifact.war':
-# 							  source  => 'http://example.com/pub/artifact.war',
-# 							  target  => '/home/tomcat/webapps',
-# 							  update  => true,
-# 							}
+#               artifact { 'artifact.war':
+#                 source  => 'http://example.com/pub/artifact.war',
+#                 target  => '/home/tomcat/webapps',
+#                 update  => true,
+#               }
 #
 define artifact (
   $source,
@@ -34,8 +34,9 @@ define artifact (
   validate_absolute_path($swap)
   validate_string($source)
   validate_string($title)
-  include artifact::install
-
+  if !defined(Class['artifact::install']) {
+    include artifact::install
+  }
   # Some overly scoped path to help functionality across platforms
   $path = '/bin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/share/bin:/usr/share/bin'
   $resource = $title
@@ -55,29 +56,40 @@ define artifact (
       exec { "artifact ${resource}":
         path     => $path,
         provider => 'shell',
-        command  => "rm -f ${full_target} && curl -so ${full_target} ${source}",
-        creates  => $full_target,
+        command  => "rm -f  ${full_target} && yes|cp ${swap_target} ${full_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
         timeout  => $wait_sec,
-        require  => Package['curl']
+        require  => File['/usr/local/sbin/artifact-puppet']
       }
     } else {
       exec { "artifact ${resource}":
         path     => $path,
         provider => 'shell',
-        command  => "curl -so ${full_target} ${source}",
-        creates  => $full_target,
+        command  => "cp ${swap_target} ${full_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
         timeout  => $wait_sec,
-        require  => Package['curl']
+        require  => File['/usr/local/sbin/artifact-puppet']
       }
     }
   } else {
-    exec { "artifact ${resource}":
-      path     => $path,
-      provider => 'shell',
-      command  => "mv -f ${swap_target} ${full_target}",
-      onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
-      timeout  => $wait_sec,
-      require  => File['/usr/local/sbin/artifact-puppet']
+    if ($purge == true) {
+      exec { "artifact ${resource}":
+        path     => $path,
+        provider => 'shell',
+        command  => "rm -f ${full_target} && mv -f ${swap_target} ${full_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        timeout  => $wait_sec,
+        require  => File['/usr/local/sbin/artifact-puppet']
+      }
+    } else {
+      exec { "artifact ${resource}":
+        path     => $path,
+        provider => 'shell',
+        command  => "mv -f ${swap_target} ${full_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        timeout  => $wait_sec,
+        require  => File['/usr/local/sbin/artifact-puppet']
+      }
     }
   }
 
@@ -90,4 +102,3 @@ define artifact (
     subscribe => Exec["artifact ${resource}"]
   }
 }
-
