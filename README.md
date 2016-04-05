@@ -1,6 +1,6 @@
 # artifact #
 
-[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.3.1-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
+[![Puppet Forge](https://img.shields.io/badge/puppetforge-v0.3.2-blue.svg)](https://forge.puppetlabs.com/swizzley88/artifact)
 
 **Table of Contents**
 
@@ -95,7 +95,6 @@ Comparison operations are limited to diff for version <= 0.1.x, and to file size
 
 ## Development
 
-  * Possibly integrate as a puppet type
   * Add support for checksum params
   * Perhaps add additional OS support
 

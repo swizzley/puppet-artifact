@@ -4,6 +4,10 @@ Below an overview of all changes in the releases.
 
 Version (Release date)
 
+0.3.2  (2016-04-05)
+
+  * Thanks to John Mchreest for adding the if defined clauses to prevent multiple attempts to install resulting in duplicate declaration in some cases. 
+
 0.3.1   (2015-11-23)
 
   * All artifacts now use comparison script
