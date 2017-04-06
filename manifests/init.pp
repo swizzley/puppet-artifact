@@ -27,13 +27,16 @@ define artifact (
   $timeout = 0,
   $owner   = undef,
   $group   = undef,
-  $mode    = undef) {
+  $mode    = undef,
+  $validate = 'size',
+  $modified = false) {
   validate_bool($update)
   validate_bool($purge)
   validate_absolute_path($target)
   validate_absolute_path($swap)
   validate_string($source)
   validate_string($title)
+  validate_bool($modified)
   if !defined(Class['artifact::install']) {
     include artifact::install
   }
@@ -57,7 +60,7 @@ define artifact (
         path     => $path,
         provider => 'shell',
         command  => "rm -f  ${full_target} && yes|cp ${swap_target} ${full_target}",
-        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target} ${validate} ${modified}",
         timeout  => $wait_sec,
         require  => File['/usr/local/sbin/artifact-puppet']
       }
@@ -66,7 +69,7 @@ define artifact (
         path     => $path,
         provider => 'shell',
         command  => "cp ${swap_target} ${full_target}",
-        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target} ${validate} ${modified}",
         timeout  => $wait_sec,
         require  => File['/usr/local/sbin/artifact-puppet']
       }
@@ -77,7 +80,7 @@ define artifact (
         path     => $path,
         provider => 'shell',
         command  => "rm -f ${full_target} && mv -f ${swap_target} ${full_target}",
-        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target} ${validate} ${modified}",
         timeout  => $wait_sec,
         require  => File['/usr/local/sbin/artifact-puppet']
       }
@@ -86,7 +89,7 @@ define artifact (
         path     => $path,
         provider => 'shell',
         command  => "mv -f ${swap_target} ${full_target}",
-        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target}",
+        onlyif   => "/usr/local/sbin/artifact-puppet ${full_target} ${source} ${swap_target} ${validate} ${modified}",
         timeout  => $wait_sec,
         require  => File['/usr/local/sbin/artifact-puppet']
       }
