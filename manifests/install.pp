@@ -20,12 +20,16 @@ class artifact::install {
     package { 'bash': ensure => installed }
   }
 
+  if !defined(Package['md5sum']) {
+    package { 'md5sum': ensure => installed }
+  }
+
   file { '/usr/local/sbin/artifact-puppet':
     ensure  => present,
     mode    => '0755',
     owner   => 'root',
     group   => 'root',
     source  => 'puppet:///modules/artifact/artifact-puppet',
-    require => [Package['dos2unix'], Package['curl'], Package['grep'], Package['bash']]
+    require => [Package['dos2unix'], Package['curl'], Package['grep'], Package['bash'], Package['md5sum']]
   }
 }

@@ -23,16 +23,18 @@ This module is designed to download artifacts using curl, the key feature is the
 
 ## Paramaeters
 
-  * $source  https://some_url.jar ```[required]```
-  * $target  /some/local/dir ```[required]```
-  * $update  override with newer ```[default: false]```
-  * $rename  rename the downloaded file ```[default: undef]```
-  * $purge   replace the target (alternative to updating) ```[default: false]```
-  * $swap    /download/dir ```[default: /tmp]```
-  * $timeout exit after $x seconds ```[default: 0]```
-  * $owner   uid owner of file ```[default: undef]```
-  * $group   gid owner of file ```[default: undef]```
-  * $mode    default permissions mode of file ```[default: undef]```
+  * $source   https://some_url.jar ```[required]```
+  * $target   /some/local/dir ```[required]```
+  * $update   override with newer ```[default: false]```
+  * $rename   rename the downloaded file ```[default: undef]```
+  * $purge    replace the target (alternative to updating) ```[default: false]```
+  * $swap     /download/dir ```[default: /tmp]```
+  * $timeout  exit after $x seconds ```[default: 0]```
+  * $owner    uid owner of file ```[default: undef]```
+  * $group    gid owner of file ```[default: undef]```
+  * $mode     default permissions mode of file ```[default: undef]```
+  * $validate default method to validate file ```[default: size]```
+  * $modified file modified elswhere in puppet ```[default: false]```
 
 ## Usage
 
@@ -63,7 +65,7 @@ artifact { "artifact-${version}-${build}.war":
 Command-Line usage of /usr/local/sbin/artifact-puppet:
 
 ```
-/usr/local/sbin/artifact-puppet /opt/wordpress.tar.gz https://wordpress.org/latest.tar.gz /tmp/wordpress.tar.gz
+/usr/local/sbin/artifact-puppet /opt/wordpress.tar.gz https://wordpress.org/latest.tar.gz /tmp/wordpress.tar.gz size false
 ```
 
 This will only compare if ARG1's size isn't the same as ARG2 and download it to ARG3, it only touches ARG1 & ARG3 if they don't exist.
@@ -71,7 +73,7 @@ This will only compare if ARG1's size isn't the same as ARG2 and download it to 
 ## Requirements
 
 ```
-package { ['curl', 'diffutils', 'grep', 'dos2unix']: ensure => 'installed' }
+package { ['curl', 'diffutils', 'grep', 'dos2unix', 'md5sum']: ensure => 'installed' }
 ```
 
 ## Compatibility

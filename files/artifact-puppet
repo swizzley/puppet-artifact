@@ -1,33 +1,57 @@
 #!/bin/bash
-if [ "$#" -ne  "3" ]
+if [ "$#" -ne  "5" ]
 then
-    echo "Usage: artifact-puppet LOCAL_FILE REMOTE_FILE_URL SWAP_FILE"
+    echo "Usage: artifact-puppet LOCAL_FILE REMOTE_FILE_URL SWAP_FILE VERSION_TYPE MODIFIED"
     exit 2;
 else
 
     LOCAL=$1
     REMOTE=$2
     SWAP=$3
+    TYPE=$(echo $4| awk '{print tolower($0)}')
+    KEEP=$(echo $5| awk '{print tolower($0)}')
     
     if [ ! -f $LOCAL ]; then touch $LOCAL; fi
     if [ ! -f $SWAP ]; then touch $SWAP; fi
+
+    function export_ver {
+        if [ "$1" == "md5" ];
+        then
+            export LOCAL_VER=$(md5sum $LOCAL |awk '{print $1}')
+            REMOTE_VER=$(curl -s ${REMOTE}.md5)
+            if [ "$REMOTE_VER" == "" ];
+            then
+                echo "There was a problem downloading the md5 from $REMOTE so puppet will revert to size"
+                export_ver "size"
+            else
+                export REMOTE_VER
+            fi
+            export SWAP_VER=$(md5sum $SWAP|awk '{print $1}')
+        else
+            export LOCAL_VER=$(ls -l $LOCAL |awk '{print $5}'|dos2unix)
+            export REMOTE_VER=$(curl -sI $REMOTE|grep Length|awk '{print $2}'|dos2unix)
+            export SWAP_VER=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
+        fi
+    }
     
-    export LOCAL_SIZE=$(ls -l $LOCAL |awk '{print $5}'|dos2unix)
-    export REMOTE_SIZE=$(curl -sI $REMOTE|grep Length|awk '{print $2}'|dos2unix)
-    export SWAP_SIZE=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
     
-    if [ "$LOCAL_SIZE" == "$REMOTE_SIZE" ]; 
+    export_ver $TYPE
+    if [ "$LOCAL_VER" == "$REMOTE_VER" ]; 
     then 
-        echo "No Update Needed"
+        echo "No Update Needed: $TYPE Match"
+        exit 3;
+    elif [ "$SWAP_VER" == "$REMOTE_VER" ] && [ $KEEP == "true" ];
+    then
+        echo "No Update Needed: SWAP $TYPE Match and Modified $KEEP"
         exit 3;
     else 
-        if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
+        if [ "$SWAP_VER" == "$REMOTE_VER" ];
         then
             echo "Update Ready in $SWAP"
         else
-            curl -so $SWAP $REMOTE
-            export SWAP_SIZE=$(ls -l $SWAP|awk '{print $5}'|dos2unix)
-            if [ "$SWAP_SIZE" == "$REMOTE_SIZE" ];
+            curl -sLo $SWAP $REMOTE
+            export_ver $TYPE
+            if [ "$SWAP_VER" == "$REMOTE_VER" ];
             then
                 echo "Update Ready in $SWAP"
             else
